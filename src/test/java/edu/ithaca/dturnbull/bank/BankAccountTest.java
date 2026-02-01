@@ -9,8 +9,19 @@ class BankAccountTest {
     @Test
     void getBalanceTest() {
         BankAccount bankAccount = new BankAccount("a@b.com", 200);
+        assertEquals(200, bankAccount.getBalance(), 0.001); //equivalence class - positive amount
 
-        assertEquals(200, bankAccount.getBalance(), 0.001);
+        BankAccount bankAccount2 = new BankAccount("a@b.com", 74.29);
+        assertEquals(74.29, bankAccount2.getBalance(), 0.001); //equivalence class - positive amount
+
+        BankAccount bankAccount3 = new BankAccount("a@b.com", 0);
+        assertEquals(0, bankAccount3.getBalance(), 0.001); //equivalence class - balance zero
+
+        BankAccount bankAccount4 = new BankAccount("a@b.com", -200);
+        assertEquals(-200, bankAccount4.getBalance(), 0.001); //equivalence class - negative amount
+
+        BankAccount bankAccount5 = new BankAccount("a@b.com", -74.29);
+        assertEquals(-74.29, bankAccount5.getBalance(), 0.001); //equivalence class - negative amount
     }
 
     @Test
