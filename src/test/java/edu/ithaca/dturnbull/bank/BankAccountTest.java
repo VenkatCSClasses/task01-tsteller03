@@ -24,32 +24,107 @@ class BankAccountTest {
 
     @Test
     void isEmailValidTest(){
-        //valid addresses
-        assertTrue(BankAccount.isEmailValid( "a@b.com")); // Equivalence class: simple valid email (border case: minimum number of characters in prefix and domain)
+        //valid addresses - border cases
+        assertTrue(BankAccount.isEmailValid( "a@mail.com")); // Equivalence class: simple valid email with minimum address length
+        assertTrue(BankAccount.isEmailValid( "a@b.com")); // Equivalence class: simple valid email with minimum address and domain length
+        assertTrue(BankAccount.isEmailValid( "abc@b.com")); // Equivalence class: simple valid email with minimum domain length
+
+        //valid addresses - all middle cases, expected input
         assertTrue(BankAccount.isEmailValid("abc-d@mail.com")); // Equivalence class: valid email with hyphen
         assertTrue(BankAccount.isEmailValid("abc.def@mail.com"));  // Equivalence class: valid email with period
         assertTrue(BankAccount.isEmailValid("abc_def@mail.com")); // Equivalence class: valid email with underscore
+        assertTrue(BankAccount.isEmailValid("a-bc.def@mail.com")); // Equivalence class: valid email with hyphen and period
+        assertTrue(BankAccount.isEmailValid("ab.cde_f@mail.com")); // Equivalence class: valid email with period and underscore
+        assertTrue(BankAccount.isEmailValid("abc-de_f@mail.com")); // Equivalence class: valid email with hyphen and underscore
+        assertTrue(BankAccount.isEmailValid("ab.cd-e_f@mail.com")); // Equivalence class: valid email with hyphen, period, and underscore
 
-        //valid domains
+        //valid domains - all middle cases, expected input
         assertTrue(BankAccount.isEmailValid("abc.def@mail.cc")); // Equivalence class: valid domain with two-letter suffix
         assertTrue(BankAccount.isEmailValid("abc.def@mail-archive.com")); // Equivalence class: valid domain with hyphen
         assertTrue(BankAccount.isEmailValid("abc.def@mail.org")); // Equivalence class: valid domain with .org suffix
         assertTrue(BankAccount.isEmailValid("abc.def@mail.net")); // Equivalence class: valid domain with .net suffix
 
-        //invalid addresses
+        //invalid addresses - missing info
         assertFalse(BankAccount.isEmailValid("")); // Equivalence class: empty string
-        assertFalse(BankAccount.isEmailValid("abc-@mail.com")); // Equivalence class: hyphen at end of handle
-        assertFalse(BankAccount.isEmailValid("abc..def@mail.com")); // Equivalence class: consecutive periods in handle (border case: minimum number of invalid periods)
-        assertFalse(BankAccount.isEmailValid(".abc@mail.com")); // Equivalence class: period at start of handle
-        assertFalse(BankAccount.isEmailValid("abc#def@mail.com")); // Equivalence class: invalid character in handle (border case: minimum number of invalid special characters)
+        assertFalse(BankAccount.isEmailValid(null)); // Equivalence class: null
+        assertFalse(BankAccount.isEmailValid("@mail.com")); // Equivalence class: no address
 
-        //invalid domains
-        assertFalse(BankAccount.isEmailValid("abc.def@mail.c")); // Equivalence class: domain with one-letter suffix
-        assertFalse(BankAccount.isEmailValid("abc.def@mail#archive.com")); // Equivalence class: inavlid character in domain
+        //invalid addresses - start & ending symbols
+        assertFalse(BankAccount.isEmailValid("-abc@mail.com")); // Equivalence class: hyphen at start of handle
+        assertFalse(BankAccount.isEmailValid("abc-@mail.com")); // Equivalence class: hyphen at end of handle
+        assertFalse(BankAccount.isEmailValid(".abc@mail.com")); // Equivalence class: period at start of handle
+        assertFalse(BankAccount.isEmailValid("abc.@mail.com")); // Equivalence class: period at end of handle
+        assertFalse(BankAccount.isEmailValid("_abc@mail.com")); // Equivalence class: underscore at start of handle
+        assertFalse(BankAccount.isEmailValid("abc_@mail.com")); // Equivalence class: underscore at end of handle
+
+        //invalid addresses - consecutive symbols (all border cases, minimum # of consecutive symbols)
+        assertFalse(BankAccount.isEmailValid("abc..def@mail.com")); // Equivalence class: consecutive periods
+        assertFalse(BankAccount.isEmailValid("abcde--f@mail.com")); // Equivalence class: consecutive hyphens
+        assertFalse(BankAccount.isEmailValid("ab__cdef@mail.com")); // Equivalence class: consecutive underscores
+
+        //invalid addresses - consecutive symbols (all middle cases, 3 consecutive symbols)
+        assertFalse(BankAccount.isEmailValid("abc...def@mail.com")); // Equivalence class: consecutive periods
+        assertFalse(BankAccount.isEmailValid("abcde---f@mail.com")); // Equivalence class: consecutive hyphens
+        assertFalse(BankAccount.isEmailValid("ab___cdef@mail.com")); // Equivalence class: consecutive underscores
+
+        //invalid addresses - prohibited symbols (all border cases, minimum # of invalid special characters)
+        assertFalse(BankAccount.isEmailValid("abc#def@mail.com")); // Equivalence class: #
+        assertFalse(BankAccount.isEmailValid("a!bcdef@mail.com")); // Equivalence class: !
+        assertFalse(BankAccount.isEmailValid("abcd$ef@mail.com")); // Equivalence class: $
+        assertFalse(BankAccount.isEmailValid("abc^def@mail.com")); // Equivalence class: ^
+        assertFalse(BankAccount.isEmailValid("abcde+f@mail.com")); // Equivalence class: +
+        assertFalse(BankAccount.isEmailValid("abcd=ef@mail.com")); // Equivalence class: =
+        assertFalse(BankAccount.isEmailValid("a~bcdef@mail.com")); // Equivalence class: ~
+        assertFalse(BankAccount.isEmailValid("abc?def@mail.com")); // Equivalence class: ?
+        assertFalse(BankAccount.isEmailValid("abcd'ef@mail.com")); // Equivalence class: '
+        assertFalse(BankAccount.isEmailValid("abcde@f@mail.com")); // Equivalence class: @
+        assertFalse(BankAccount.isEmailValid("a%bcdef@mail.com")); // Equivalence class: %
+        assertFalse(BankAccount.isEmailValid("abc*def@mail.com")); // Equivalence class: *
+
+        //invalid addresses - prohibited symbols (all middle cases, 2 invalid special characters)
+        assertFalse(BankAccount.isEmailValid("ab$c#def@mail.com")); // Equivalence class: prohibited symbols
+        assertFalse(BankAccount.isEmailValid("ab$$cdef@mail.com")); // Equivalence class: prohibited symbols
+        assertFalse(BankAccount.isEmailValid("!abcdef*@mail.com")); // Equivalence class: prohibited symbols
+        assertFalse(BankAccount.isEmailValid("abcde?f?@mail.com")); // Equivalence class: prohibited symbols
+
+        //invalid domains - missing info
+        assertFalse(BankAccount.isEmailValid("abc@")); // Equivalence class: no domain or suffix
+        assertFalse(BankAccount.isEmailValid("abc@.com")); // Equivalence class: no domain
         assertFalse(BankAccount.isEmailValid("abc.def@mail")); // Equivalence class: domain with no suffix
-        assertFalse(BankAccount.isEmailValid("abc.def@mail..com")); // Equivalence class: consecutive periods in domain (border case: minimum number of invalid periods)
-    
-        // Missing equivalency cases: space in email, multiple @ symbols, @ at beginning or end, . at beginning or end, . next to @
+
+        //invalid domains - suffix length (border cases, minimum suffix length)
+        assertFalse(BankAccount.isEmailValid("abc.def@mail.")); // Equivalence class: domain with zero-letter suffix
+        assertFalse(BankAccount.isEmailValid("abc.def@mail.c")); // Equivalence class: domain with one-letter suffix
+
+        //invalid domains - prohibited symbols (all border cases, minimum # of invalid special characters)
+        assertFalse(BankAccount.isEmailValid("abc.def@mail#archive.com")); // Equivalence class: #
+        assertFalse(BankAccount.isEmailValid("abc.def@ma!l.com")); // Equivalence class: !
+        assertFalse(BankAccount.isEmailValid("abc.def@m$ail.com")); // Equivalence class: $
+
+        //invalid domains - consecutive symbols (border cases, minimum number of consecutive symbols)
+        assertFalse(BankAccount.isEmailValid("abc.def@mail..com")); // Equivalence class: consecutive periods in domain
+        assertFalse(BankAccount.isEmailValid("abc.def@mail--archive.com")); // Equivalence class: consecutive hyphens in domain
+        assertFalse(BankAccount.isEmailValid("abc@@mail.com")); // Equivalence class: consecutive @ symbols
+
+        //spaces in email - all are equivalence classes and border cases, minimum number of spaces for address to be invalid
+        assertFalse(BankAccount.isEmailValid(" abc@mail.com")); 
+        assertFalse(BankAccount.isEmailValid("a bc@mail.com")); 
+        assertFalse(BankAccount.isEmailValid("abc @mail.com")); 
+        assertFalse(BankAccount.isEmailValid("abc@ mail.com")); 
+        assertFalse(BankAccount.isEmailValid("abc@m ail.com")); 
+        assertFalse(BankAccount.isEmailValid("abc@mail .com")); 
+        assertFalse(BankAccount.isEmailValid("abc@mail. com")); 
+        assertFalse(BankAccount.isEmailValid("abc@mail.co m")); 
+        assertFalse(BankAccount.isEmailValid("abc@mail.com ")); 
+
+        //spaces in email - all middle cases, two spaces
+        assertFalse(BankAccount.isEmailValid(" a bc@mail.com")); 
+        assertFalse(BankAccount.isEmailValid("a  bc@mail.com")); 
+        assertFalse(BankAccount.isEmailValid("abc @ma il.com")); 
+        assertFalse(BankAccount.isEmailValid("abc@  mail.com")); 
+        assertFalse(BankAccount.isEmailValid("abc@m ai l.com")); 
+        assertFalse(BankAccount.isEmailValid("abc@ma il.co m")); 
+        assertFalse(BankAccount.isEmailValid(" abc@mail. com")); 
     }
 
     @Test
