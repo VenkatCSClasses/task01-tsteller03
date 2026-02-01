@@ -16,10 +16,32 @@ class BankAccountTest {
     @Test
     void withdrawTest() throws InsufficientFundsException{
         BankAccount bankAccount = new BankAccount("a@b.com", 200);
-        bankAccount.withdraw(100);
 
-        assertEquals(100, bankAccount.getBalance(), 0.001);
-        assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(300));
+        bankAccount.withdraw(100); //equivalence class - amount is positive
+        assertEquals(100, bankAccount.getBalance(), 0.001); //middle case - expected amount
+
+        bankAccount.withdraw(64.10); //equivalence class - amount is positive
+        assertEquals(35.90, bankAccount.getBalance(), 0.001); //middle case - expected amount
+
+        bankAccount.withdraw(0.01); //equivalence class - amount is positive
+        assertEquals(35.89, bankAccount.getBalance(), 0.001); //border case - minimum amount
+
+        //equivalence class - amount exceeds balance
+        assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(bankAccount.getBalance() + 0.01)); //border case - minimum amount
+
+        //equivalence class - amount exceeds balance
+        assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(63.72)); //middle case - greater than balance
+
+        //equivalence class - amount is negative
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.withdraw(-0.01)); //border case - minimum amount
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.withdraw(-18.44)); //middle case - less than balance
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.withdraw(-95)); //middle case - greater than balance
+
+        bankAccount.withdraw(35.89); //border case - maximum amount
+        assertEquals(0, bankAccount.getBalance(), 0.001);
+
+        //equivalence case - amount exceeds balance
+        assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(0.01)); //border case - minimum amount when balance 0
     }
 
     @Test
