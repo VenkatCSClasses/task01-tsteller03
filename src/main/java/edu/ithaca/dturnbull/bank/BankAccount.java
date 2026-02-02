@@ -32,7 +32,7 @@ public class BankAccount {
      * @throws InsufficientFundsException if amount is larger than balance
      */
     public void withdraw (double amount) throws InsufficientFundsException{
-        if (amount <= balance){
+        if (amount <= balance && amount > 0){
             balance -= amount;
         }
         else {
@@ -69,13 +69,23 @@ public class BankAccount {
                 || email.indexOf('}') != -1
                 || email.indexOf('[') != -1
                 || email.indexOf(']') != -1
+                || email.indexOf('~') != -1
+                || email.indexOf('`') != -1
+                || email.indexOf("'") != -1
+                || email.indexOf('"') != -1
+                || email.indexOf('?') != -1
                 || email.indexOf('-') == email.indexOf('@') - 1
                 || email.indexOf('-') == email.indexOf('@') + 1
                 || email.indexOf('-') == email.length() - 1
+                || email.indexOf('-') == 0
+                || email.indexOf("--") != -1
                 || email.indexOf('_') == email.indexOf('@') - 1
                 || email.indexOf('_') == email.indexOf('@') + 1
                 || email.indexOf('_') == email.length() - 1
+                || email.indexOf('_') == 0
+                || email.indexOf("__") != -1
                 || email.substring(email.indexOf('@')).indexOf('.') == -1
+                || email.equals(null)
                 )
                 {
             return false;
