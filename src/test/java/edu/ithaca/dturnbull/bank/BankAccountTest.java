@@ -25,6 +25,60 @@ class BankAccountTest {
     }
 
     @Test
+    void isAmountValidTest() {
+        //equivalence class - positive, zero decimal places
+        assertTrue(BankAccount.isAmountValid(100)); //middle case - expected amount
+        assertTrue(BankAccount.isAmountValid(1)); //middle case - expected amount
+        assertTrue(BankAccount.isAmountValid(0)); //border case - minimum amount
+
+        //equivalence class - positive, one decimal place
+        assertTrue(BankAccount.isAmountValid(91.4)); //middle case - expected amount
+        assertTrue(BankAccount.isAmountValid(1000.0)); //middle case - expected amount
+        assertTrue(BankAccount.isAmountValid(0.0)); //border case - minimum amount
+        assertTrue(BankAccount.isAmountValid(0.1)); //border case - minimum amount that is non-zero
+
+        //equivalence class - positive, two decimal places
+        assertTrue(BankAccount.isAmountValid(68.23)); //middle case - expected amount
+        assertTrue(BankAccount.isAmountValid(68.20)); //middle case - expected amount
+        assertTrue(BankAccount.isAmountValid(0.00)); //border case - minimum amount
+        assertTrue(BankAccount.isAmountValid(0.01)); //border case - minimum amount that is non-zero
+
+        //equivalence class - positive, more than two decimal places - only zeroes beyond 2nd decimal place
+        assertTrue(BankAccount.isAmountValid(31.000)); //middle case - expected amount
+        assertTrue(BankAccount.isAmountValid(25.7300)); //middle case - expected amount
+        assertTrue(BankAccount.isAmountValid(197328.0600000)); //middle case - expected amount
+        assertTrue(BankAccount.isAmountValid(748.1000)); //middle case - expected amount
+        assertTrue(BankAccount.isAmountValid(1.0000000000000000)); //border case - minimum amount (any form of 0s following)
+
+        //equivalence class - negative, zero decimal places
+        assertFalse(BankAccount.isAmountValid(-100)); //middle case - expected amount
+        assertFalse(BankAccount.isAmountValid(-1)); //border case - minimum amount
+
+        //equivalence class - negative, one decimal place
+        assertFalse(BankAccount.isAmountValid(-91.4)); //middle case - expected amount
+        assertFalse(BankAccount.isAmountValid(-0.1)); //border case - minimum amount
+
+        //equivalence class - negative, two decimal places
+        assertFalse(BankAccount.isAmountValid(-68.23)); //middle case - expected amount
+        assertFalse(BankAccount.isAmountValid(-68.20)); //middle case - expected amount
+        assertFalse(BankAccount.isAmountValid(-0.01)); //border case - minimum amount
+
+        //equivalence class - negative, more than two decimal places
+        assertFalse(BankAccount.isAmountValid(-68.200000)); //middle case - expected amount
+        assertFalse(BankAccount.isAmountValid(-1.047)); //middle case - expected amount
+        assertFalse(BankAccount.isAmountValid(-43.0009)); //middle case - expected amount
+        assertFalse(BankAccount.isAmountValid(-0.00000000001)); //border case - minimum amount (in practice)
+
+        //equivalence class - positive, more than two decimal places - not only zeroes beyond 2nd decimal place
+        assertFalse(BankAccount.isAmountValid(49.2187415)); //middle case - expected amount
+        assertFalse(BankAccount.isAmountValid(81.09600)); //middle case - expected amount
+        assertFalse(BankAccount.isAmountValid(124.1507)); //middle case - expected amount
+        assertFalse(BankAccount.isAmountValid(31.0049)); //middle case - expected amount
+        assertFalse(BankAccount.isAmountValid(1.005)); //middle case - expected amount
+        assertFalse(BankAccount.isAmountValid(1.00000000000000000000001)); //border case - minimum amount (in practice)
+    }
+
+    @Test
     void withdrawTest() throws InsufficientFundsException{
         BankAccount bankAccount = new BankAccount("a@b.com", 200);
 
