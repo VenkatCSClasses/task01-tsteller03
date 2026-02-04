@@ -30,9 +30,30 @@ public class BankAccount {
      * @return true if amount is positive and at most two decimal places, and false if otherwise
      */
     public static boolean isAmountValid(double amount) {
-        //implementation - must be two decimal places, unless ALL OF the following are zero.
-        //invalid even if .00000000001
-        return false;
+        //Check if amount is negative
+        if (amount < 0) {
+            return false;
+        }
+
+        String amountString = String.valueOf(amount);  
+        int amountLength = amountString.length();
+        int decimalIndex = amountString.indexOf('.');
+
+        //If there is no decimal value, or only one or two decimal places, automatically return true
+        if (decimalIndex == -1) { 
+            return true;
+        } else if (amountLength - decimalIndex-1 == 1 || amountLength - decimalIndex-1 == 2) {
+            return true;
+        } else {
+            //If not, check if every digit beyond the second decimal place is 0 - return false if not
+            for (int i = decimalIndex+2; i <= amountLength; i++) {
+                if(amountString.charAt(i) != '0') {
+                    return false;
+                }
+            }
+        }
+          
+        return true;
     }
 
     /**

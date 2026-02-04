@@ -75,7 +75,7 @@ class BankAccountTest {
         assertFalse(BankAccount.isAmountValid(124.1507)); //middle case - expected amount
         assertFalse(BankAccount.isAmountValid(31.0049)); //middle case - expected amount
         assertFalse(BankAccount.isAmountValid(1.005)); //middle case - expected amount
-        assertFalse(BankAccount.isAmountValid(1.00000000000000000000001)); //border case - minimum amount (in practice)
+        assertFalse(BankAccount.isAmountValid(1.000000000000001)); //border case - minimum amount of zeroes before automatic rounding
     }
 
     @Test
