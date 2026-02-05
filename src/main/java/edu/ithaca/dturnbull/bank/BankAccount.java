@@ -27,6 +27,14 @@ public class BankAccount {
     }
 
     /**
+     * @post increases the balance by amount if amount is non-negative and smaller than balance
+     * @throws IllegalArgumentException if amount is negative or has unacceptable amount of decimal places
+     */
+    public void deposit(double amount) {
+        throw new IllegalArgumentException("Not implemented yet");
+    }
+
+    /**
      * @post reduces the balance by amount if amount is non-negative and smaller than balance
      * @throws IllegalArgumentException if amount is negative or has unacceptable amount of decimal places
      * @throws InsufficientFundsException if amount is larger than balance

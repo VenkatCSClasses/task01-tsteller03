@@ -171,6 +171,57 @@ class BankAccountTest {
     }
 
     @Test
+    void depositTest() throws IllegalArgumentException {
+        BankAccount bankAccount = new BankAccount("a@b.com", 200);
+
+        bankAccount.deposit(37); //equivalence class - amount is positive, 0 decimal places
+        assertEquals(237, bankAccount.getBalance(), 0.001); //middle case - expected amount
+
+        bankAccount.deposit(0); //equivalence class - amount is positive, 0 decimal places
+        assertEquals(237, bankAccount.getBalance(), 0.001); //border case - minimum amount
+
+        //equivalence class - more than 2 decimal places, unacceptable
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.deposit(27.1984));  //middle case - expected amount
+
+        bankAccount.deposit(18.2); //equivalence class - amount is positive, 1 decimal place
+        assertEquals(255.2, bankAccount.getBalance(), 0.001); //middle case - expected amount
+
+        bankAccount.deposit(0.1); //equivalence class - amount is positive, 1 decimal place
+        assertEquals(255.3, bankAccount.getBalance(), 0.001); //border case - minimum amount
+
+        //equivalence class - amount is negative
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.deposit(-0.01)); //border case - minimum amount
+
+        bankAccount.deposit(0.01); //equivalence class - amount is positive, 2 decimal places
+        assertEquals(255.31, bankAccount.getBalance(), 0.001); //border case - minimum amount
+
+        bankAccount.deposit(4.69); //equivalence class - amount is positive, 2 decimal places
+        assertEquals(260.00, bankAccount.getBalance(), 0.001); //middle case - expected amount
+
+        //equivalence class - amount is negative
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.deposit(-113.12)); //middle case - expected amount
+
+        bankAccount.deposit(1.0200000); //equivalence class - more than 2 decimal places, acceptable
+        assertEquals(261.02, bankAccount.getBalance(), 0.001); //middle case - expected amount
+
+        //equivalence class - negative and more than 2 decimal places, acceptable
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.deposit(-31.3000000));  //middle case - expected amount
+
+        bankAccount.deposit(3.5000000); //equivalence class - more than 2 decimal places, acceptable
+        assertEquals(264.52, bankAccount.getBalance(), 0.001); //middle case - expected amount
+
+        //equivalence class - more than 2 decimal places, unacceptable
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.deposit(0.000000001));  //border case - minimum amount
+
+        bankAccount.deposit(35.480000); //equivalence class - more than 2 decimal places, acceptable
+        assertEquals(300.00, bankAccount.getBalance(), 0.001); //middle case - expected amount
+
+        //equivalence class - more than 2 decimal places, unacceptable
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.deposit(301.0425000001));  //middle case - expected amount
+
+    }
+
+    @Test
     void withdrawTest() throws InsufficientFundsException{
         BankAccount bankAccount = new BankAccount("a@b.com", 200);
 
