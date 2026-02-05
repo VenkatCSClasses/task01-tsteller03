@@ -264,8 +264,73 @@ class BankAccountTest {
         bankAccount.withdraw(31.370000); //equivalence class - more than 2 decimal places, acceptable
         assertEquals(0, bankAccount.getBalance(), 0.001); //border case - maximum amount
 
-        //equivalence case - amount exceeds balance
+        //equivalence class - amount exceeds balance
         assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(0.01)); //border case - minimum amount when balance 0
+    }
+
+    @Test
+    void transferTest() {
+        BankAccount bankAccount = new BankAccount("abc@mail.com", 31.00);
+        BankAccount bankAccount2 = new BankAccount("def@mail.com", 55.50);
+
+        //equivalence class - 0 decimal places
+        bankAccount.transfer("def@mail.com", 1); //border case - minimum amount
+        assertEquals(30.00, bankAccount.getBalance(), 0.001);
+        assertEquals(56.50, bankAccount2.getBalance(), 0.001);
+
+        //equivalence class - 0 decimal places
+        bankAccount.transfer("def@mail.com", 5); //middle case - expected amount
+        assertEquals(25.00, bankAccount.getBalance(), 0.001);
+        assertEquals(61.50, bankAccount2.getBalance(), 0.001);
+
+        //equivalence class - amount exceeds balance
+        assertThrows(InsufficientFundsException.class, () -> bankAccount.transfer("def@mail.com", 25.01)); //middle case - expected amount
+
+        //equivalence class - 1 decimal places
+        bankAccount.transfer("def@mail.com", 0.1); //border case - minimum amount
+        assertEquals(29.90, bankAccount.getBalance(), 0.001);
+        assertEquals(61.60, bankAccount2.getBalance(), 0.001);
+
+        //equivalence class - 1 decimal places
+        bankAccount.transfer("def@mail.com", 2.9); //middle case - expected amount
+        assertEquals(27.00, bankAccount.getBalance(), 0.001);
+        assertEquals(64.50, bankAccount2.getBalance(), 0.001);
+
+        //equivalence class - 2 decimal places
+        bankAccount.transfer("def@mail.com", 0.01); //border case - minimum amount
+        assertEquals(26.99, bankAccount.getBalance(), 0.001);
+        assertEquals(64.51, bankAccount2.getBalance(), 0.001);
+
+        //equivalence class - 2 decimal places
+        bankAccount.transfer("def@mail.com", 3.99); //middle case - expected amount
+        assertEquals(23.00, bankAccount.getBalance(), 0.001);
+        assertEquals(68.50, bankAccount2.getBalance(), 0.001);
+
+        //equivalence class - more than 2 decimal places, unacceptable
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.transfer("def@mail.com", 21.94184531)); //middle case - expected amount
+
+        //equivalence class - more than 2 decimal places, acceptable
+        bankAccount.transfer("def@mail.com", 23.0000000); //middle case - expected amount
+        assertEquals(0.00, bankAccount.getBalance(), 0.001);
+        assertEquals(91.50, bankAccount2.getBalance(), 0.001);
+
+        //equivalence class - amount exceeds balance when balance is 0
+        assertThrows(InsufficientFundsException.class, () -> bankAccount.transfer("def@mail.com", 2.14)); //middle case - expected amount
+
+        //equivalence class - more than 2 decimal places acceptable
+        bankAccount2.transfer("abc@mail.com", 91.480000000); //middle case - expected amount
+        assertEquals(91.48, bankAccount.getBalance(), 0.001);
+        assertEquals(0.02, bankAccount2.getBalance(), 0.001);
+
+        //equivalence class - more than 2 decimal places, unacceptable
+        assertThrows(IllegalArgumentException.class, () -> bankAccount2.transfer("abc@mail.com", 0.0100000001)); //border case - minimum amount
+
+        //equivalence class - amount is negative
+        assertThrows(IllegalArgumentException.class, () -> bankAccount2.transfer("abc@mail.com", -0.01)); //border case - minimum amount
+
+        //equivalence class - amount is negative
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.transfer("def@mail.com", -24.3)); //middle case - expected amount
+
     }
 
     @Test

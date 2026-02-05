@@ -54,6 +54,16 @@ public class BankAccount {
     }
 
     /**
+     * @param email the email associated with the bank account to transfer to
+     * @post reduces the original account balance by amount and increases the transfer account balance by amount
+     * @throws IllegalArgumentException if amount is negative or has unacceptable amount of decimal places
+     * @throws InsufficientFundsException if amount is larger than the balance of the giving account
+     */
+    public void transfer(String email, double amount) {
+        throw new IllegalArgumentException("Not implemented yet");
+    }
+
+    /**
      * @return true if amount is positive and at most two decimal places, and false if otherwise
      */
     public static boolean isAmountValid(double amount) {
