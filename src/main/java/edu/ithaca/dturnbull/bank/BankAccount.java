@@ -31,7 +31,11 @@ public class BankAccount {
      * @throws IllegalArgumentException if amount is negative or has unacceptable amount of decimal places
      */
     public void deposit(double amount) {
-        throw new IllegalArgumentException("Not implemented yet");
+        if (isAmountValid(amount)) {
+            balance += amount;
+        } else {
+            throw new IllegalArgumentException("Invalid amount");
+        }
     }
 
     /**
