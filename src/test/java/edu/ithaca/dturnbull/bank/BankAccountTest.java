@@ -8,12 +8,100 @@ class BankAccountTest {
 
     @Test
     void constructorTest() {
-        BankAccount bankAccount = new BankAccount("a@b.com", 200);
+        //valid email & balances
 
+        //equivalence class - valid email, 0 decimal place balance
+        BankAccount bankAccount = new BankAccount("a@b.com", 200);
         assertEquals("a@b.com", bankAccount.getEmail());
         assertEquals(200, bankAccount.getBalance(), 0.001);
-        //check for exception thrown correctly
-        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("", 100));
+
+        //equivalence class - valid email, 1 decimal place balance
+        BankAccount bankAccount2 = new BankAccount("a_b@b.org", 49.7);
+        assertEquals("a_b@b.org", bankAccount2.getEmail());
+        assertEquals(49.7, bankAccount2.getBalance(), 0.001);
+
+        //equivalence class - valid email, 2 decimal place balance
+        BankAccount bankAccount3 = new BankAccount("abc@def.com", 0.01);
+        assertEquals("abc@def.com", bankAccount3.getEmail());
+        assertEquals(0.01, bankAccount3.getBalance(), 0.001);
+
+        //equivalence class - valid email, acceptable over 2 decimal place balance
+        BankAccount bankAccount4 = new BankAccount("abc-123@def.com", 51.0300000000);
+        assertEquals("abc-123@def.com", bankAccount4.getEmail());
+        assertEquals(51.0300000000, bankAccount4.getBalance(), 0.001);
+
+        //equivalence class - valid email, acceptable over 2 decimal place balance
+        BankAccount bankAccount5 = new BankAccount("ab@cd.com", 12.4000);
+        assertEquals("ab@cd.com", bankAccount5.getEmail());
+        assertEquals(12.4000, bankAccount5.getBalance(), 0.001);
+
+        //equivalence class - valid email, acceptable over 2 decimal place balance
+        BankAccount bankAccount6 = new BankAccount("ab.cd@ef.com", 25.0000000);
+        assertEquals("ab.cd@ef.com", bankAccount6.getEmail());
+        assertEquals(25.0000000, bankAccount6.getBalance(), 0.001);
+
+        //invalid email only
+
+        //equivalence class - prohibited symbol
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("abc$def@mail.com", 1.00));
+
+        //equivalence class - start symbol
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("-abc@mail.com", 1.00));
+
+        //equivalence class - ending symbol
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("abc-@mail.com", 1.00));
+
+        //equivalence class - consecutive symbols
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("abc..def@mail.com", 1.00));
+
+        //equivalence class - suffix length
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("abc@mail.", 1.00));
+
+        //equivalence class - space in address
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("a bc@mail.com", 1.00));
+
+        //equivalence class - space in domain
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("abc@ma il.com", 1.00));
+
+        //equivalence class - missing address
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("@mail.com", 1.00));
+
+        //equivalence class - missing domain
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("abc@", 1.00));
+
+        //invalid balance only
+
+        //equivalence class - negative balance, 0 decimal points
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("abc@mail.com", -1));
+
+        //equivalence class - negative balance, 1 decimal point
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("abc@mail.com", -8.6));
+
+        //equivalence class - negative balance, 2 decimal points
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("abc@mail.com", -21.74));
+
+        //equivalence class - negative balance, acceptable over 2 decimal points
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("abc@mail.com", -65.0000000));
+
+        //equivalence class - negative balance, unacceptable over 2 decimal points
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("abc@mail.com", -65.00000001));
+
+        //equivalence class - positive balance, unacceptable over 2 decimal points
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("abc@mail.com", 65.00000001));
+
+        //invalid email and balance
+
+        //equivalence class - space in address, negative balance w/ 0 decimal points
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("ab c@mail.com", -1));
+
+        //equivalence class - consecutive symbols, negative balance w/ unacceptable over 2 decimal points
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("abc..def@mail.com", -10.000001));
+
+        //equivalence class - prohibited symbols, negative balance w/ acceptable over 2 decimal points
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("ab!cd@mail.com", -10.000000));
+
+        //equivalence class - missing address, positive balance w/ unacceptable over 2 decimal points
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("@mail.com", 37.41628));
     }
 
     @Test
@@ -159,7 +247,7 @@ class BankAccountTest {
 
         //invalid addresses - missing info
         assertFalse(BankAccount.isEmailValid("")); // Equivalence class: empty string
-        // assertFalse(BankAccount.isEmailValid(null)); // Equivalence class: null
+        assertFalse(BankAccount.isEmailValid(null)); // Equivalence class: null
         assertFalse(BankAccount.isEmailValid("@mail.com")); // Equivalence class: no address
 
         //invalid addresses - start & ending symbols
