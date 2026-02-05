@@ -269,22 +269,22 @@ class BankAccountTest {
     }
 
     @Test
-    void transferTest() {
-        BankAccount bankAccount = new BankAccount("abc@mail.com", 31.00);
+    void transferTest() throws InsufficientFundsException {
+        BankAccount bankAccount = new BankAccount("abc@mail.com", 36.00);
         BankAccount bankAccount2 = new BankAccount("def@mail.com", 55.50);
 
         //equivalence class - 0 decimal places
         bankAccount.transfer(bankAccount2, 1); //border case - minimum amount
-        assertEquals(30.00, bankAccount.getBalance(), 0.001);
+        assertEquals(35.00, bankAccount.getBalance(), 0.001);
         assertEquals(56.50, bankAccount2.getBalance(), 0.001);
 
         //equivalence class - 0 decimal places
         bankAccount.transfer(bankAccount2, 5); //middle case - expected amount
-        assertEquals(25.00, bankAccount.getBalance(), 0.001);
+        assertEquals(30.00, bankAccount.getBalance(), 0.001);
         assertEquals(61.50, bankAccount2.getBalance(), 0.001);
 
         //equivalence class - amount exceeds balance
-        assertThrows(InsufficientFundsException.class, () -> bankAccount.transfer(bankAccount2, 25.01)); //middle case - expected amount
+        assertThrows(InsufficientFundsException.class, () -> bankAccount.transfer(bankAccount2, 30.01)); //middle case - expected amount
 
         //equivalence class - 1 decimal places
         bankAccount.transfer(bankAccount2, 0.1); //border case - minimum amount

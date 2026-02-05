@@ -59,8 +59,15 @@ public class BankAccount {
      * @throws IllegalArgumentException if amount is negative or has unacceptable amount of decimal places
      * @throws InsufficientFundsException if amount is larger than the balance of the giving account
      */
-    public void transfer(BankAccount account, double amount) {
-        throw new IllegalArgumentException("Not implemented yet");
+    public void transfer(BankAccount account, double amount) throws InsufficientFundsException{
+        if (amount > balance) {
+            throw new InsufficientFundsException("Not enough money");
+        } else if (amount <= balance && isAmountValid(amount)) {
+            balance -= amount;
+            account.deposit(amount);
+        } else {
+            throw new IllegalArgumentException("Invalid amount");
+        }
     }
 
     /**
