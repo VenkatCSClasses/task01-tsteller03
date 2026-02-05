@@ -7,6 +7,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class BankAccountTest {
 
     @Test
+    void constructorTest() {
+        BankAccount bankAccount = new BankAccount("a@b.com", 200);
+
+        assertEquals("a@b.com", bankAccount.getEmail());
+        assertEquals(200, bankAccount.getBalance(), 0.001);
+        //check for exception thrown correctly
+        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("", 100));
+    }
+
+    @Test
     void getBalanceTest() {
         BankAccount bankAccount = new BankAccount("a@b.com", 200);
         assertEquals(200, bankAccount.getBalance(), 0.001); //equivalence class - positive amount
@@ -82,14 +92,32 @@ class BankAccountTest {
     void withdrawTest() throws InsufficientFundsException{
         BankAccount bankAccount = new BankAccount("a@b.com", 200);
 
-        bankAccount.withdraw(100); //equivalence class - amount is positive
+        bankAccount.withdraw(100); //equivalence class - amount is positive, 0 decimal places
         assertEquals(100, bankAccount.getBalance(), 0.001); //middle case - expected amount
 
-        bankAccount.withdraw(64.10); //equivalence class - amount is positive
+        //equivalence class - more than 2 decimal places, unacceptable
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.withdraw(27.1984));  //middle case - expected amount
+
+        bankAccount.withdraw(64.1); //equivalence class - amount is positive, 1 decimal place
         assertEquals(35.90, bankAccount.getBalance(), 0.001); //middle case - expected amount
 
-        bankAccount.withdraw(0.01); //equivalence class - amount is positive
+        //equivalence class - amount is negative
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.withdraw(-0.01)); //border case - minimum amount
+
+        bankAccount.withdraw(0.01); //equivalence class - amount is positive, 2 decimal places
         assertEquals(35.89, bankAccount.getBalance(), 0.001); //border case - minimum amount
+
+        //equivalence class - amount is negative
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.withdraw(-18.4)); //middle case - less than balance
+
+        bankAccount.withdraw(1.0200000); //equivalence class - more than 2 decimal places, acceptable
+        assertEquals(34.87, bankAccount.getBalance(), 0.001); //middle case - expected amount
+
+        //equivalence class - amount is negative
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.withdraw(-95.02)); //middle case - greater than balance
+
+        bankAccount.withdraw(3.5000000); //equivalence class - more than 2 decimal places, acceptable
+        assertEquals(31.37, bankAccount.getBalance(), 0.001); //middle case - expected amount
 
         //equivalence class - amount exceeds balance
         assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(bankAccount.getBalance() + 0.01)); //border case - minimum amount
@@ -97,13 +125,11 @@ class BankAccountTest {
         //equivalence class - amount exceeds balance
         assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(63.72)); //middle case - greater than balance
 
-        //equivalence class - amount is negative
-        assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(-0.01)); //border case - minimum amount
-        assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(-18.44)); //middle case - less than balance
-        assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(-95)); //middle case - greater than balance
+        //equivalence class - more than 2 decimal places, unacceptable
+        assertThrows(IllegalArgumentException.class, () -> bankAccount.withdraw(31.36000001));  //middle case - expected amount
 
-        bankAccount.withdraw(35.89); //border case - maximum amount
-        assertEquals(0, bankAccount.getBalance(), 0.001);
+        bankAccount.withdraw(31.370000); //equivalence class - more than 2 decimal places, acceptable
+        assertEquals(0, bankAccount.getBalance(), 0.001); //border case - maximum amount
 
         //equivalence case - amount exceeds balance
         assertThrows(InsufficientFundsException.class, () -> bankAccount.withdraw(0.01)); //border case - minimum amount when balance 0
@@ -212,16 +238,6 @@ class BankAccountTest {
         assertFalse(BankAccount.isEmailValid("abc@m ai l.com")); 
         assertFalse(BankAccount.isEmailValid("abc@ma il.co m")); 
         assertFalse(BankAccount.isEmailValid(" abc@mail. com")); 
-    }
-
-    @Test
-    void constructorTest() {
-        BankAccount bankAccount = new BankAccount("a@b.com", 200);
-
-        assertEquals("a@b.com", bankAccount.getEmail());
-        assertEquals(200, bankAccount.getBalance(), 0.001);
-        //check for exception thrown correctly
-        assertThrows(IllegalArgumentException.class, ()-> new BankAccount("", 100));
     }
 
 }
